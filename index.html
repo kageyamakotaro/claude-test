@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>じゃんけんゲーム</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: #f6f5f1;
+    color: #222;
+  }
+  main { width: 100%; max-width: 420px; padding: 24px 20px; text-align: center; }
+  h1 { font-size: 24px; margin: 0 0 24px; }
+  .hands { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .card { background: #fff; border-radius: 16px; padding: 16px 8px; }
+  .label { font-size: 13px; color: #777; }
+  .emoji { font-size: 56px; line-height: 1.3; }
+  .name { font-size: 16px; font-weight: 600; }
+  #result { font-size: 22px; font-weight: 700; min-height: 34px; margin-bottom: 20px; }
+  .win { color: #2e7d32; } .lose { color: #c62828; } .draw { color: #555; }
+  .buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+  .buttons button {
+    flex: 1; border: none; border-radius: 14px; padding: 14px 0;
+    background: #fff; font-size: 16px; cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  .buttons button span { display: block; font-size: 32px; }
+  .buttons button:active { transform: scale(0.96); }
+  #score { font-size: 15px; color: #555; }
+  #reset { margin-top: 12px; background: none; border: none; color: #888; font-size: 14px; text-decoration: underline; cursor: pointer; }
+</style>
+</head>
+<body>
+<main>
+  <h1>じゃんけんゲーム</h1>
+
+  <div class="hands">
+    <div class="card">
+      <div class="label">あなた</div>
+      <div class="emoji" id="player-emoji">❔</div>
+      <div class="name" id="player-name">-</div>
+    </div>
+    <div class="card">
+      <div class="label">コンピュータ</div>
+      <div class="emoji" id="cpu-emoji">❔</div>
+      <div class="name" id="cpu-name">-</div>
+    </div>
+  </div>
+
+  <div id="result">手を選んでね</div>
+
+  <div class="buttons">
+    <button data-hand="0"><span>✊</span>グー</button>
+    <button data-hand="1"><span>✌️</span>チョキ</button>
+    <button data-hand="2"><span>✋</span>パー</button>
+  </div>
+
+  <div id="score">勝ち 0 ・ 負け 0 ・ あいこ 0</div>
+  <button id="reset">リセット</button>
+</main>
+
+<script>
+  const HANDS = [
+    { name: "グー", emoji: "✊" },
+    { name: "チョキ", emoji: "✌️" },
+    { name: "パー", emoji: "✋" },
+  ];
+  let win = 0, lose = 0, draw = 0;
+  const $ = (id) => document.getElementById(id);
+
+  function updateScore() {
+    $("score").textContent = `勝ち ${win} ・ 負け ${lose} ・ あいこ ${draw}`;
+  }
+
+  document.querySelectorAll("[data-hand]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const p = Number(btn.dataset.hand);
+      const c = Math.floor(Math.random() * 3);
+      $("player-emoji").textContent = HANDS[p].emoji;
+      $("player-name").textContent = HANDS[p].name;
+      $("cpu-emoji").textContent = HANDS[c].emoji;
+      $("cpu-name").textContent = HANDS[c].name;
+
+      // (p - c + 3) % 3 → 0: あいこ, 2: 勝ち, 1: 負け
+      const r = (p - c + 3) % 3;
+      const result = $("result");
+      if (r === 0) { draw++; result.textContent = "あいこ"; result.className = "draw"; }
+      else if (r === 2) { win++; result.textContent = "あなたの勝ち！"; result.className = "win"; }
+      else { lose++; result.textContent = "あなたの負け…"; result.className = "lose"; }
+      updateScore();
+    });
+  });
+
+  $("reset").addEventListener("click", () => {
+    win = lose = draw = 0;
+    updateScore();
+    $("result").textContent = "手を選んでね";
+    $("result").className = "";
+  });
+</script>
+</body>
+</html>

@@ -16,6 +16,10 @@ Claude Code を試すための練習用リポジトリです。
 
 ## じゃんけんゲームの遊び方
 
+スマホやブラウザで遊ぶ: https://kageyamakotaro.github.io/claude-test/
+
+PCで Python 版を動かす:
+
 ```
 python janken.py          # 対話モードで遊ぶ
 python janken.py グー      # 1回だけ勝負する
